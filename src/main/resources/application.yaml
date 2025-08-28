@@ -25,3 +25,20 @@ spring:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
+
+  # Configuración específica de Spring Modulith
+  modulith:
+    events:
+      # ¿Qué hace? Guarda eventos procesados para auditoría
+      # Alternativa: delete (elimina eventos procesados para ahorrar espacio)
+      completion-mode: archive
+
+      # ¿Para qué? Si la app se reinicia, re-procesa eventos pendientes
+      # Garantiza que ningún evento se pierda
+      republish-outstanding-events-on-restart: true
+
+  # Logging para desarrollo - ver qué hace Spring Modulith
+  logging:
+    level:
+      com.geovannycode.store: DEBUG
+      org.springframework.modulith: DEBUG
