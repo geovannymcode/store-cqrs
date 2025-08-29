@@ -69,9 +69,9 @@ INSERT INTO products (id, name, description, category, price, stock) VALUES
 
 -- Insertar reviews de ejemplo
 INSERT INTO reviews (id, product_id, vote, comment, author) VALUES
-                                                                ('r1', 'f47ac10b-58cc-4372-a567-0e02b2c3d479', 5, 'Amazing phone, love the titanium!', 'John Doe'),
-                                                                ('r2', 'f47ac10b-58cc-4372-a567-0e02b2c3d479', 4, 'Great camera quality', 'Jane Smith'),
-                                                                ('r3', '6ba7b810-9dad-11d1-80b4-00c04fd430c8', 5, 'Best laptop I have ever used', 'Tech Reviewer');
+                                                                ('a25e6b7c-4e89-4a3f-a90c-f2c66f578c6b', 'f47ac10b-58cc-4372-a567-0e02b2c3d479', 5, 'Amazing phone, love the titanium!', 'John Doe'),
+                                                                ('b43fc3dd-8f2a-4a78-b8cc-181e8e42d8c5', 'f47ac10b-58cc-4372-a567-0e02b2c3d479', 4, 'Great camera quality', 'Jane Smith'),
+                                                                ('c91f4e22-3b5a-4d7f-9a6e-7c9d2b3a1e4d', '6ba7b810-9dad-11d1-80b4-00c04fd430c8', 5, 'Best laptop I have ever used', 'Tech Reviewer');
 
 -- Copiar datos a la vista de lectura
 INSERT INTO product_views (id, name, description, category, price, stock, average_rating, review_count)
@@ -93,3 +93,35 @@ FROM products p
     FROM reviews
     GROUP BY product_id
 ) r ON p.id = r.product_id;
+
+-- Tabla requerida por Spring Modulith JPA
+CREATE TABLE event_publication (
+                                   id UUID PRIMARY KEY,
+                                   publication_date TIMESTAMP,
+                                   completion_date TIMESTAMP,
+                                   listener_id VARCHAR(255) NOT NULL,
+                                   event_type VARCHAR(255) NOT NULL,
+                                   serialized_event TEXT NOT NULL,
+                                   event_identifier VARCHAR(255) NOT NULL,
+                                   publication_status VARCHAR(255) NOT NULL
+);
+
+-- Índices para mejorar el rendimiento
+CREATE INDEX idx_event_publication_status ON event_publication(publication_status);
+CREATE INDEX idx_event_publication_listener ON event_publication(listener_id);
+
+-- Tabla de archivado para Spring Modulith
+CREATE TABLE event_publication_archive (
+                                           id UUID PRIMARY KEY,
+                                           publication_date TIMESTAMP,
+                                           completion_date TIMESTAMP,
+                                           listener_id VARCHAR(255) NOT NULL,
+                                           event_type VARCHAR(255) NOT NULL,
+                                           serialized_event TEXT NOT NULL,
+                                           event_identifier VARCHAR(255) NOT NULL,
+                                           publication_status VARCHAR(255) NOT NULL
+);
+
+-- Índices para el rendimiento
+CREATE INDEX idx_event_publication_archive_listener ON event_publication_archive(listener_id);
+CREATE INDEX idx_event_publication_archive_date ON event_publication_archive(completion_date);
