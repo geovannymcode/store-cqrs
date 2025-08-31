@@ -1,5 +1,6 @@
 package com.geovannycode;
 
+import com.geovannycode.store.StoreCqrsApplication;
 import org.springframework.boot.SpringApplication;
 
 public class TestStoreCqrsApplication {
