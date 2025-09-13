@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 
 @Service
@@ -21,7 +22,7 @@ public class ProductCommandService {
     private final ProductRepository products;
     private final ApplicationEventPublisher eventPublisher;
 
-    Product.ProductIdentifier createProduct(String name, String description, BigDecimal price,
+    ProductIdentifier createProduct(String name, String description, BigDecimal price,
                                             Integer stock, String category) {
 
         // Paso 1: Crear el objeto Product
@@ -43,7 +44,7 @@ public class ProductCommandService {
      *
      * @throws ProductNotFoundException si el producto no existe
      */
-    void updateProduct(Product.ProductIdentifier productId, String name, String description,
+    void updateProduct(ProductIdentifier productId, String name, String description,
                        BigDecimal price, Integer stock, String category) {
         // Buscar y actualizar el producto
         var product = findProductOrThrow(productId);
@@ -61,7 +62,7 @@ public class ProductCommandService {
      * @throws ProductNotFoundException si el producto no existe
      * @throws InvalidVoteException si el voto está fuera de rango
      */
-    Review addReview(Product.ProductIdentifier productId, Integer vote, String comment) {
+    Review addReview(ProductIdentifier productId, Integer vote, String comment) {
         validateVote(vote);
 
         // Crear review
@@ -128,11 +129,12 @@ public class ProductCommandService {
                         product.getDescription(),
                         product.getPrice(),
                         product.getStock(),
-                        product.getCategory()
+                        product.getCategory(),
+                        UUID.randomUUID().toString()
                 )
         );
     }
-    private Product findProductOrThrow(Product.ProductIdentifier productId) {
+    private Product findProductOrThrow(ProductIdentifier productId) {
         return products.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND + productId));
     }
@@ -143,7 +145,7 @@ public class ProductCommandService {
         }
     }
 
-    private void publishReviewAddedEvent(Product.ProductIdentifier productId, Review review) {
+    private void publishReviewAddedEvent(ProductIdentifier productId, Review review) {
         eventPublisher.publishEvent(
                 new ProductEvents.ProductReviewed(
                         productId,

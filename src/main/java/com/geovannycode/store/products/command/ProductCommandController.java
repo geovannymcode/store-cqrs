@@ -22,7 +22,7 @@ public class ProductCommandController {
     private final ProductCommandService commandService;
 
     @PostMapping
-    ResponseEntity<Product.ProductIdentifier> createProduct(@RequestBody CreateProductRequest request) {
+    ResponseEntity<ProductIdentifier> createProduct(@RequestBody CreateProductRequest request) {
 
         var id = commandService.createProduct(
                 request.name(), request.description(), request.price(),
@@ -30,13 +30,13 @@ public class ProductCommandController {
         );
 
         return ResponseEntity
-                .created(URI.create("/api/products/" + id.id()))  // Header Location
+                .created(URI.create("/api/products/" + id.getId()))  // Header Location
                 .body(id);                                        // Cuerpo de respuesta
     }
 
     @PutMapping("/{id}")
     ResponseEntity<Void> updateProduct(
-            @PathVariable Product.ProductIdentifier id,
+            @PathVariable ProductIdentifier id,
             @RequestBody UpdateProductRequest request) {
 
         commandService.updateProduct(
@@ -49,14 +49,14 @@ public class ProductCommandController {
 
     @PostMapping("/{id}/reviews")
     ResponseEntity<ReviewIdentifier> addReview(
-            @PathVariable Product.ProductIdentifier id,
+            @PathVariable ProductIdentifier id,
             @RequestBody AddReviewRequest request) {
 
         var review = commandService.addReview(id, request.vote(), request.comment());
         var reviewId = review.getId();
-        
+
         return ResponseEntity
-                .created(URI.create("/api/products/" + id.id() + "/reviews/" + reviewId.id()))
+                .created(URI.create("/api/products/" + id.getId()+ "/reviews/" + reviewId.id()))
                 .body(reviewId);
     }
 

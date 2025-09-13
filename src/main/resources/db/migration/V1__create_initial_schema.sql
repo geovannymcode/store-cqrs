@@ -101,13 +101,10 @@ CREATE TABLE event_publication (
                                    completion_date TIMESTAMP,
                                    listener_id VARCHAR(255) NOT NULL,
                                    event_type VARCHAR(255) NOT NULL,
-                                   serialized_event TEXT NOT NULL,
-                                   event_identifier VARCHAR(255) NOT NULL,
-                                   publication_status VARCHAR(255) NOT NULL
+                                   serialized_event TEXT NOT NULL
 );
 
 -- Índices para mejorar el rendimiento
-CREATE INDEX idx_event_publication_status ON event_publication(publication_status);
 CREATE INDEX idx_event_publication_listener ON event_publication(listener_id);
 
 -- Tabla de archivado para Spring Modulith
@@ -117,9 +114,7 @@ CREATE TABLE event_publication_archive (
                                            completion_date TIMESTAMP,
                                            listener_id VARCHAR(255) NOT NULL,
                                            event_type VARCHAR(255) NOT NULL,
-                                           serialized_event TEXT NOT NULL,
-                                           event_identifier VARCHAR(255) NOT NULL,
-                                           publication_status VARCHAR(255) NOT NULL
+                                           serialized_event TEXT NOT NULL
 );
 
 -- Índices para el rendimiento

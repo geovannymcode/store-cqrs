@@ -1,21 +1,33 @@
 package com.geovannycode.store.products.command;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.jmolecules.ddd.types.Entity;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "reviews")
 @Getter
 @Setter
-public class Review implements Entity<Product, ReviewIdentifier> {
+public class Review implements org.jmolecules.ddd.types.Entity<Product, ReviewIdentifier> {
+
+    @EmbeddedId
     private ReviewIdentifier id;
     private Integer vote;
     private String comment;
     private String author;
 
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
     public Review() {
         this.id = new ReviewIdentifier(UUID.randomUUID());
+        this.createdAt = LocalDateTime.now();
     }
 
     /**

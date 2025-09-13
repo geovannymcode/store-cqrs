@@ -14,7 +14,7 @@ public class ProductEvents {
      * Evento publicado cuando se crea un producto.
      */
     public record ProductCreated(
-            Product.ProductIdentifier id,
+            ProductIdentifier id,
             String name,
             String description,
             BigDecimal price,
@@ -26,19 +26,20 @@ public class ProductEvents {
      * Evento publicado cuando se actualiza un producto.
      */
     public record ProductUpdated(
-            Product.ProductIdentifier id,
+            ProductIdentifier id,
             String name,
             String description,
             BigDecimal price,
             Integer stock,
-            String category
+            String category,
+            String eventIdentifier
     ) implements DomainEvent {}
 
     /**
      * Evento publicado cuando se agrega un review.
      */
     public record ProductReviewed(
-            Product.ProductIdentifier productId,
+            ProductIdentifier productId,
             ReviewIdentifier reviewId,
             Integer vote,
             String comment

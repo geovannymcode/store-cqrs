@@ -65,10 +65,19 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
+
+        <!-- CQRS annotations como @QueryModel -->
+        <dependency>
+            <groupId>org.jmolecules</groupId>
+            <artifactId>jmolecules-cqrs-architecture</artifactId>
+            <version>1.10.0</version>
+        </dependency>
+
+        <!-- (Opcional si no la tienes) DDD types como AggregateRoot -->
         <dependency>
             <groupId>org.jmolecules</groupId>
             <artifactId>jmolecules-ddd</artifactId>
-            <version>1.4.0</version>
+            <version>1.10.0</version>
         </dependency>
         <dependency>
 			<groupId>org.springframework.boot</groupId>
