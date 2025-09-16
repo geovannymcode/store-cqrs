@@ -15,14 +15,11 @@ class ProductEventHandler {
 
     private final ProductViewRepository viewRepository;
 
-    /**
-     * Crea una nueva vista cuando se crea un producto.
-     */
+
     @DomainEventHandler
     @ApplicationModuleListener
     @Transactional
     void on(ProductCreated event) {
-        // Crear nueva vista con datos del evento
         var view = new ProductView();
         view.setId(event.id());
         view.setName(event.name());
@@ -30,8 +27,6 @@ class ProductEventHandler {
         view.setPrice(event.price());
         view.setStock(event.stock());
         view.setCategory(event.category());
-
-        // Guardar en la base de datos de queries
         viewRepository.save(view);
     }
 
@@ -41,14 +36,12 @@ class ProductEventHandler {
     @Transactional
     void on(ProductUpdated event) {
         viewRepository.findById(event.id()).ifPresent(view -> {
-            // Actualizar todos los campos básicos
             view.setName(event.name());
             view.setDescription(event.description());
             view.setPrice(event.price());
             view.setStock(event.stock());
             view.setCategory(event.category());
 
-            // Guardar cambios
             viewRepository.save(view);
         });
     }
