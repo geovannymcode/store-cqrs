@@ -1,5 +1,8 @@
 package com.geovannycode.store.orders.domain;
 
+import com.geovannycode.store.orders.domain.models.Customer;
+import com.geovannycode.store.orders.domain.models.OrderItem;
+import com.geovannycode.store.orders.domain.models.OrderStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
