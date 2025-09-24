@@ -30,8 +30,8 @@ public class ProductCommandController {
         );
 
         return ResponseEntity
-                .created(URI.create("/api/products/" + id.getId()))  // Header Location
-                .body(id);                                        // Cuerpo de respuesta
+                .created(URI.create("/api/products/" + id.getId()))
+                .body(id);
     }
 
     @PutMapping("/{id}")
