@@ -5,6 +5,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -14,34 +16,37 @@ public class InventoryService {
 
     private final InventoryRepository inventoryRepository;
 
-    public InventoryEntity updateStock(ProductIdentifier productId, Integer stock) {
-        InventoryEntity inventory = inventoryRepository.findByProductId(productId)
-                .orElseGet(() -> new InventoryEntity(productId, 0));
+    @Transactional
+    public void reserveStock(Map<ProductIdentifier, Integer> requested) {
+        Map<ProductIdentifier, InventoryEntity> loaded = new HashMap<>();
+        for (var entry : requested.entrySet()) {
+            var pid = entry.getKey();
+            var inv = inventoryRepository.findWithLockingByProductId(pid)
+                    .orElseThrow(() -> new IllegalStateException("No inventory for product " + pid.getId()));
+            loaded.put(pid, inv);
+        }
 
-        inventory.setAvailableStock(stock);
-        inventory.setLastUpdated(java.time.LocalDateTime.now());
+        // 2) Validar TODO antes de mutar
+        for (var entry : requested.entrySet()) {
+            var pid = entry.getKey();
+            var qty = entry.getValue();
+            var inv = loaded.get(pid);
+            if (qty == null || qty <= 0) {
+                throw new IllegalArgumentException("Invalid quantity for " + pid.getId());
+            }
+            if (inv.getAvailableStock() < qty) {
+                throw new IllegalStateException("Insufficient stock for " + pid.getId()
+                        + " (requested " + qty + ", available " + inv.getAvailableStock() + ")");
+            }
+        }
 
-        return inventoryRepository.save(inventory);
-    }
-
-    public InventoryEntity decreaseStock(ProductIdentifier productId, Integer quantity) {
-        InventoryEntity inventory = inventoryRepository.findByProductId(productId)
-                .orElseThrow(() -> new IllegalStateException("No inventory found for product: " + productId.toString()));
-
-        inventory.decreaseStock(quantity);
-
-        return inventoryRepository.save(inventory);
-    }
-
-    @Transactional()
-    public int getAvailableStock(ProductIdentifier productId) {
-        return inventoryRepository.findByProductId(productId)
-                .map(InventoryEntity::getAvailableStock)
-                .orElse(0);
-    }
-
-    @Transactional()
-    public boolean hasEnoughStock(ProductIdentifier productId, Integer quantity) {
-        return getAvailableStock(productId) >= quantity;
+        // 3) Aplicar decrementos y persistir
+        for (var entry : requested.entrySet()) {
+            var pid = entry.getKey();
+            var qty = entry.getValue();
+            var inv = loaded.get(pid);
+            inv.decreaseStock(qty);                // ya actualiza lastUpdated
+            inventoryRepository.save(inv);
+        }
     }
 }

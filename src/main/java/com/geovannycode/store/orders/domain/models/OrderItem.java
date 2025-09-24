@@ -1,45 +1,42 @@
 package com.geovannycode.store.orders.domain.models;
 
-import com.geovannycode.store.orders.domain.OrderEntity;
+import com.geovannycode.store.common.ProductIdentifierAttributeConverter;
 import com.geovannycode.store.products.command.ProductIdentifier;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.jmolecules.ddd.types.Identifier;
-import org.jmolecules.ddd.types.Entity;
 
 import java.math.BigDecimal;
-import java.util.UUID;
+
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderItem implements Entity<OrderEntity, OrderItem.OrderItemIdentifier> {
+@AllArgsConstructor
+@Embeddable
+public class OrderItem {
 
-    private OrderItemIdentifier id;
+
+    @Convert(converter = ProductIdentifierAttributeConverter.class)
+    @Column(name = "product_id", nullable = false, columnDefinition = "uuid")
     private ProductIdentifier productId;
+
+    @Column(name = "product_name", nullable = false, length = 180)
     private String productName;
+
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    @Column(name = "unit_price", nullable = false, precision = 19, scale = 2)
     private BigDecimal unitPrice;
 
-    public OrderItem(ProductIdentifier productId, String productName, Integer quantity, BigDecimal unitPrice) {
-        this.id = new OrderItemIdentifier(UUID.randomUUID());
-        this.productId = productId;
-        this.productName = productName;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
-    }
-
-
+    @Transient
     public BigDecimal getSubtotal() {
-        return unitPrice.multiply(new BigDecimal(quantity));
-    }
-
-    public record OrderItemIdentifier(UUID id) implements Identifier {
-        public OrderItemIdentifier {
-            if (id == null) {
-                throw new IllegalArgumentException("OrderItem ID cannot be null");
-            }
-        }
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 }

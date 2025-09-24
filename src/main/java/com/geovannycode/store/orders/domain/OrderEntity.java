@@ -3,6 +3,18 @@ package com.geovannycode.store.orders.domain;
 import com.geovannycode.store.orders.domain.models.Customer;
 import com.geovannycode.store.orders.domain.models.OrderItem;
 import com.geovannycode.store.orders.domain.models.OrderStatus;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,14 +29,30 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@Table(name = "orders")
 public class OrderEntity implements AggregateRoot<OrderEntity, OrderEntity.OrderIdentifier> {
 
+    @EmbeddedId
+    @AttributeOverride(name = "id",
+            column = @Column(name = "id", nullable = false, updatable = false, columnDefinition = "uuid"))
     private OrderIdentifier id;
+
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 32)
     private OrderStatus status;
+
+    @Embedded
     private Customer customer;
+
+    @ElementCollection
+    @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
     private List<OrderItem> items = new ArrayList<>();
+
 
     public OrderEntity(Customer customer) {
         this.id = new OrderIdentifier(UUID.randomUUID());

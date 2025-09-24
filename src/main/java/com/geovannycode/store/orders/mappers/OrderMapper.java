@@ -44,7 +44,6 @@ public class OrderMapper {
 
         List<OrderDto.OrderItemDto> itemDtos = order.getItems().stream()
                 .map(item -> new OrderDto.OrderItemDto(
-                        item.getId().id(),
                         item.getProductId().getId(),
                         item.getProductName(),
                         item.getQuantity(),

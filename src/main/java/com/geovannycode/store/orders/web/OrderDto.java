@@ -20,7 +20,6 @@ public record OrderDto(
     ) {}
 
     public record OrderItemDto(
-            UUID id,
             UUID productId,
             String productName,
             Integer quantity,

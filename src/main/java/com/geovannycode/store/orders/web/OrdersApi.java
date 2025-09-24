@@ -45,7 +45,6 @@ public class OrdersApi {
                 "Order created successfully"
         );
 
-        // Devolver 201 Created con la ubicación del recurso
         return ResponseEntity
                 .created(URI.create("/api/orders/" + orderId.id()))
                 .body(response);
