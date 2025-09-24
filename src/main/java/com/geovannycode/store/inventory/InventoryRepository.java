@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-interface InventoryRepository extends CrudRepository<InventoryEntity, InventoryEntity.InventoryIdentifier> {
+interface InventoryRepository extends CrudRepository<InventoryEntity, ProductIdentifier> {
 
     Optional<InventoryEntity> findByProductId(ProductIdentifier productId);
     Iterable<InventoryEntity> findByAvailableStockLessThan(Integer threshold);

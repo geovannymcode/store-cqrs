@@ -26,10 +26,10 @@ public class OrderEventInventoryHandler {
 
             try {
                 inventoryService.decreaseStock(productId, quantity);
-                log.info("Stock decreased for product: {}, quantity: {}", productId.getId(), quantity);
+                log.info("Stock decreased for product: {}, quantity: {}", productId, quantity);
             } catch (IllegalStateException e) {
                 log.error("Failed to decrease stock for product: {}, reason: {}",
-                        productId.getId(), e.getMessage());
+                        productId, e.getMessage());
 
             }
         });

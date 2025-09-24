@@ -1,6 +1,14 @@
 package com.geovannycode.store.inventory;
 
 import com.geovannycode.store.products.command.ProductIdentifier;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,13 +20,28 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@Table(name = "inventory")
 public class InventoryEntity implements AggregateRoot<InventoryEntity, InventoryEntity.InventoryIdentifier> {
 
+    @EmbeddedId
+    @AttributeOverride(name = "id",
+            column = @Column(name = "id", nullable = false, updatable = false, columnDefinition = "uuid"))
+
     private InventoryIdentifier id;
+
+    @Convert(converter = ProductIdentifierConverter.class)
+    @Column(name = "product_id", nullable = false, updatable = false)
     private ProductIdentifier productId;
+
+    @Column(name = "available_stock", nullable = false)
     private Integer availableStock;
+
+    @Column(name = "reserved_stock", nullable = false)
     private Integer reservedStock;
+
+    @Column(name = "last_updated", nullable = false)
     private LocalDateTime lastUpdated;
 
     /**
@@ -57,14 +80,19 @@ public class InventoryEntity implements AggregateRoot<InventoryEntity, Inventory
         return this;
     }
 
-    /**
-     * Value Object para el identificador de Inventory.
-     */
-    public record InventoryIdentifier(UUID id) implements Identifier {
-        public InventoryIdentifier {
-            if (id == null) {
-                throw new IllegalArgumentException("Inventory ID cannot be null");
-            }
+
+    @Embeddable
+    public static class InventoryIdentifier implements Identifier {
+        @Column(name = "inventory_id", nullable = false, updatable = false, columnDefinition = "uuid")
+        private UUID id;
+
+        protected InventoryIdentifier() { }
+
+        public InventoryIdentifier(UUID id) {
+            if (id == null) throw new IllegalArgumentException("Inventory ID cannot be null");
+            this.id = id;
         }
+
+        public UUID getId() { return id; }
     }
 }

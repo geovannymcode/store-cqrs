@@ -5,6 +5,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -24,7 +26,7 @@ public class InventoryService {
 
     public InventoryEntity decreaseStock(ProductIdentifier productId, Integer quantity) {
         InventoryEntity inventory = inventoryRepository.findByProductId(productId)
-                .orElseThrow(() -> new IllegalStateException("No inventory found for product: " + productId.getId()));
+                .orElseThrow(() -> new IllegalStateException("No inventory found for product: " + productId.toString()));
 
         inventory.decreaseStock(quantity);
 
