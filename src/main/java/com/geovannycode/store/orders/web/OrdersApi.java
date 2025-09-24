@@ -76,7 +76,7 @@ public class OrdersApi {
     public ResponseEntity<String> handleOrderNotFound(OrderNotFoundException ex) {
         return ResponseEntity.notFound().build();
     }
-    
+
     @ExceptionHandler(InvalidOrderException.class)
     public ResponseEntity<String> handleInvalidOrder(InvalidOrderException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
