@@ -1,4 +1,4 @@
-package com.geovannycode.store.orders.domain;
+package com.geovannycode.store.orders.domain.models;
 
 import org.jmolecules.event.types.DomainEvent;
 

@@ -1,5 +1,6 @@
-package com.geovannycode.store.orders.domain;
+package com.geovannycode.store.orders.domain.models;
 
+import com.geovannycode.store.orders.domain.OrderEntity;
 import com.geovannycode.store.products.command.ProductIdentifier;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

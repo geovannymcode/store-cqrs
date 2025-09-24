@@ -1,4 +1,9 @@
 package com.geovannycode.store.orders.web;
 
-public class CreateOrderResponse {
-}
+import java.util.UUID;
+
+public record CreateOrderResponse(
+        UUID orderId,
+        String status,
+        String message
+) {}
