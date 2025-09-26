@@ -1,4 +1,4 @@
-package com.geovannycode.store.catalog.query;
+package com.geovannycode.store.catalog.events;
 
 import com.geovannycode.store.catalog.events.ProductEvents.ProductReviewed;
 import com.geovannycode.store.catalog.events.ProductEvents.ProductUpdated;

@@ -1,4 +1,4 @@
-package com.geovannycode.store.catalog.domain;
+package com.geovannycode.store.catalog.exception;
 
 /**
  * Excepción lanzada cuando se intenta acceder a un producto que no existe.

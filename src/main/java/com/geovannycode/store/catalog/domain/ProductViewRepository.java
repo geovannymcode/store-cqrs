@@ -1,13 +1,12 @@
-package com.geovannycode.store.catalog.query;
+package com.geovannycode.store.catalog.domain;
 
-import com.geovannycode.store.catalog.command.ProductIdentifier;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-interface ProductViewRepository extends ListCrudRepository<ProductView, ProductIdentifier> {
+interface ProductViewRepository extends ListCrudRepository<ProductView, Product.ProductIdentifier> {
 
     List<ProductView> findByCategory(String category);
 

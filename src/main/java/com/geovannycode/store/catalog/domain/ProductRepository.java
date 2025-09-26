@@ -1,6 +1,6 @@
-package com.geovannycode.store.catalog.command;
+package com.geovannycode.store.catalog.domain;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface ProductRepository extends CrudRepository<Product, ProductIdentifier> {
+public interface ProductRepository extends CrudRepository<Product, Product.ProductIdentifier> {
 }

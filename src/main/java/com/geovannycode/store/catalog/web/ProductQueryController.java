@@ -1,4 +1,4 @@
-package com.geovannycode.store.catalog.query;
+package com.geovannycode.store.catalog.web;
 
 import com.geovannycode.store.catalog.domain.Product;
 import com.geovannycode.store.catalog.domain.ProductQueryService;
@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-public class ProductViewController {
+public class ProductQueryController {
 
     private final ProductQueryService queryService;
 

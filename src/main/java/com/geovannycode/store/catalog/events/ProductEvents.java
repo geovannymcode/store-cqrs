@@ -1,5 +1,7 @@
-package com.geovannycode.store.catalog.command;
+package com.geovannycode.store.catalog.events;
 
+import com.geovannycode.store.catalog.domain.Product;
+import com.geovannycode.store.catalog.domain.ReviewIdentifier;
 import org.jmolecules.event.types.DomainEvent;
 
 import java.math.BigDecimal;
@@ -14,7 +16,7 @@ public class ProductEvents {
      * Evento publicado cuando se crea un producto.
      */
     public record ProductCreated(
-            ProductIdentifier id,
+            Product.ProductIdentifier id,
             String name,
             String description,
             BigDecimal price,
@@ -26,7 +28,7 @@ public class ProductEvents {
      * Evento publicado cuando se actualiza un producto.
      */
     public record ProductUpdated(
-            ProductIdentifier id,
+            Product.ProductIdentifier id,
             String name,
             String description,
             BigDecimal price,
@@ -39,7 +41,7 @@ public class ProductEvents {
      * Evento publicado cuando se agrega un review.
      */
     public record ProductReviewed(
-            ProductIdentifier productId,
+            Product.ProductIdentifier productId,
             ReviewIdentifier reviewId,
             Integer vote,
             String comment

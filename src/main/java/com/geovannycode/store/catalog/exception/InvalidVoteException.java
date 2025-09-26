@@ -1,4 +1,4 @@
-package com.geovannycode.store.products.exception;
+package com.geovannycode.store.catalog.exception;
 
 /**
  * Excepción lanzada cuando se intenta crear una reseña con un voto inválido.

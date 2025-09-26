@@ -1,4 +1,4 @@
-package com.geovannycode.store.catalog.domain;
+package com.geovannycode.store.catalog.exception;
 
 /**
  * Excepción base para todas las excepciones relacionadas con productos.

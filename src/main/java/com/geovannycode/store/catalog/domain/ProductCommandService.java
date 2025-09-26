@@ -1,5 +1,6 @@
-package com.geovannycode.store.catalog.command;
+package com.geovannycode.store.catalog.domain;
 
+import com.geovannycode.store.catalog.events.ProductEvents;
 import com.geovannycode.store.catalog.exception.InvalidVoteException;
 import com.geovannycode.store.catalog.exception.ProductNotFoundException;
 import jakarta.transaction.Transactional;
@@ -8,6 +9,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -22,64 +24,59 @@ public class ProductCommandService {
     private final ProductRepository products;
     private final ApplicationEventPublisher eventPublisher;
 
-    ProductIdentifier createProduct(String name, String description, BigDecimal price,
-                                            Integer stock, String category) {
-
-        // Paso 1: Crear el objeto Product
-        var product = createProductEntity(name, description, price, stock, category);
-
-        // Paso 2: Guardar en base de datos
-        var saved = products.save(product);
-
-        // Paso 3: Publicar evento (solo si el guardado fue exitoso)
-        publishProductCreatedEvent(saved);
-
-        // Paso 4: Devolver el ID
-        return saved.getId();
-
+    /**
+     * Creates a new product and publishes an event.
+     *
+     * @return Product identifier of the created product
+     */
+    public Product.ProductIdentifier createProduct(String name, String description, BigDecimal price,
+                                                   Integer stock, String category) {
+        // Create and save product using functional approach
+        return Optional.ofNullable(createProductEntity(name, description, price, stock, category))
+                .map(products::save)
+                .map(this::publishProductCreatedEvent)
+                .map(Product::getId)
+                .orElseThrow(() -> new IllegalStateException("Failed to create product"));
     }
 
     /**
-     * Actualiza un producto existente y publica un evento de actualización.
+     * Updates an existing product and publishes an event.
      *
-     * @throws ProductNotFoundException si el producto no existe
+     * @throws ProductNotFoundException if the product does not exist
      */
-    void updateProduct(ProductIdentifier productId, String name, String description,
-                       BigDecimal price, Integer stock, String category) {
-        // Buscar y actualizar el producto
-        var product = findProductOrThrow(productId);
-        updateProductFields(product, name, description, price, stock, category);
-
-        // Persistir y publicar evento
-        products.save(product);
-        publishProductUpdatedEvent(product);
+    public void updateProduct(Product.ProductIdentifier productId, String name, String description,
+                              BigDecimal price, Integer stock, String category) {
+        products.findById(productId)
+                .map(product -> updateProductFields(product, name, description, price, stock, category))
+                .map(products::save)
+                .map(this::publishProductUpdatedEvent)
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND + productId));
     }
 
     /**
-     * Agrega un review a un producto y publica un evento.
+     * Adds a review to a product and publishes an event.
      *
-     * @return El review creado
-     * @throws ProductNotFoundException si el producto no existe
-     * @throws InvalidVoteException si el voto está fuera de rango
+     * @return The review created
+     * @throws ProductNotFoundException if the product does not exist
+     * @throws InvalidVoteException if the vote is invalid
      */
-    Review addReview(ProductIdentifier productId, Integer vote, String comment) {
+    public Review addReview(Product.ProductIdentifier productId, Integer vote, String comment) {
         validateVote(vote);
 
-        // Crear review
-        var review = createReview(vote, comment);
+        // Create review
+        final Review review = createReview(vote, comment);
 
-        // Buscar producto, agregar review y guardar
-        var product = findProductOrThrow(productId)
-                .add(review);
-        products.save(product);
-
-        // Publicar evento
-        publishReviewAddedEvent(product.getId(), review);
-
-        return review;
+        return products.findById(productId)
+                .map(product -> product.add(review))
+                .map(products::save)
+                .map(product -> {
+                    publishReviewAddedEvent(product.getId(), review);
+                    return review;
+                })
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND + productId));
     }
 
-    // ===== Métodos privados de soporte =====
+    // ===== Private methods =====
 
     private Product createProductEntity(String name, String description,
                                         BigDecimal price, Integer stock, String category) {
@@ -92,7 +89,7 @@ public class ProductCommandService {
         return product;
     }
 
-    private void publishProductCreatedEvent(Product product) {
+    private Product publishProductCreatedEvent(Product product) {
         eventPublisher.publishEvent(
                 new ProductEvents.ProductCreated(
                         product.getId(),
@@ -103,15 +100,17 @@ public class ProductCommandService {
                         product.getCategory()
                 )
         );
+        return product;
     }
 
-    private void updateProductFields(Product product, String name, String description,
-                                     BigDecimal price, Integer stock, String category) {
+    private Product updateProductFields(Product product, String name, String description,
+                                        BigDecimal price, Integer stock, String category) {
         product.setName(name);
         product.setDescription(description);
         product.setPrice(price);
         product.setStock(stock);
         product.setCategory(category);
+        return product;
     }
 
     private Review createReview(Integer vote, String comment) {
@@ -121,7 +120,7 @@ public class ProductCommandService {
         return review;
     }
 
-    private void publishProductUpdatedEvent(Product product) {
+    private Product publishProductUpdatedEvent(Product product) {
         eventPublisher.publishEvent(
                 new ProductEvents.ProductUpdated(
                         product.getId(),
@@ -133,10 +132,7 @@ public class ProductCommandService {
                         UUID.randomUUID().toString()
                 )
         );
-    }
-    private Product findProductOrThrow(ProductIdentifier productId) {
-        return products.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND + productId));
+        return product;
     }
 
     private void validateVote(Integer vote) {
@@ -145,7 +141,7 @@ public class ProductCommandService {
         }
     }
 
-    private void publishReviewAddedEvent(ProductIdentifier productId, Review review) {
+    private void publishReviewAddedEvent(Product.ProductIdentifier productId, Review review) {
         eventPublisher.publishEvent(
                 new ProductEvents.ProductReviewed(
                         productId,

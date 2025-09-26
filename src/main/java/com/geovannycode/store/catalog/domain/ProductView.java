@@ -1,7 +1,6 @@
-package com.geovannycode.store.catalog.query;
+package com.geovannycode.store.catalog.domain;
 
-import com.geovannycode.store.catalog.command.ProductEvents.ProductReviewed;
-import com.geovannycode.store.catalog.command.ProductIdentifier;
+import com.geovannycode.store.catalog.events.ProductEvents.ProductReviewed;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -21,10 +20,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @QueryModel
-public class ProductView implements AggregateRoot<ProductView, ProductIdentifier> {
+public class ProductView implements AggregateRoot<ProductView, Product.ProductIdentifier> {
 
     @EmbeddedId
-    private ProductIdentifier id;
+    private Product.ProductIdentifier id;
     private String name, description, category;
     private BigDecimal price;
     private Integer stock;

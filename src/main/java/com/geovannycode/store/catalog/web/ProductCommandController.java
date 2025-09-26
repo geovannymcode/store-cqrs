@@ -1,8 +1,11 @@
-package com.geovannycode.store.catalog.command;
+package com.geovannycode.store.catalog.web;
 
-import com.geovannycode.store.catalog.dto.command.AddReviewRequest;
-import com.geovannycode.store.catalog.dto.command.CreateProductRequest;
-import com.geovannycode.store.catalog.dto.command.UpdateProductRequest;
+import com.geovannycode.store.catalog.domain.Product;
+import com.geovannycode.store.catalog.domain.ProductCommandService;
+import com.geovannycode.store.catalog.domain.ReviewIdentifier;
+import com.geovannycode.store.catalog.web.dto.AddReviewRequest;
+import com.geovannycode.store.catalog.web.dto.CreateProductRequest;
+import com.geovannycode.store.catalog.web.dto.UpdateProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +25,7 @@ public class ProductCommandController {
     private final ProductCommandService commandService;
 
     @PostMapping
-    ResponseEntity<ProductIdentifier> createProduct(@RequestBody CreateProductRequest request) {
+    ResponseEntity<Product.ProductIdentifier> createProduct(@RequestBody CreateProductRequest request) {
 
         var id = commandService.createProduct(
                 request.name(), request.description(), request.price(),
@@ -36,7 +39,7 @@ public class ProductCommandController {
 
     @PutMapping("/{id}")
     ResponseEntity<Void> updateProduct(
-            @PathVariable ProductIdentifier id,
+            @PathVariable Product.ProductIdentifier id,
             @RequestBody UpdateProductRequest request) {
 
         commandService.updateProduct(
@@ -49,7 +52,7 @@ public class ProductCommandController {
 
     @PostMapping("/{id}/reviews")
     ResponseEntity<ReviewIdentifier> addReview(
-            @PathVariable ProductIdentifier id,
+            @PathVariable Product.ProductIdentifier id,
             @RequestBody AddReviewRequest request) {
 
         var review = commandService.addReview(id, request.vote(), request.comment());

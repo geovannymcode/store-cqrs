@@ -1,4 +1,4 @@
-package com.geovannycode.store.catalog.dto.command;
+package com.geovannycode.store.catalog.web.dto;
 
 import java.math.BigDecimal;
 

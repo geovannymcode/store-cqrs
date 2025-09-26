@@ -1,4 +1,4 @@
-package com.geovannycode.store.catalog.command;
+package com.geovannycode.store.catalog.domain;
 
 import org.jmolecules.ddd.types.Identifier;
 

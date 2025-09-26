@@ -1,4 +1,4 @@
-@NamedInterface("command")
-package com.geovannycode.store.catalog.command;
+@NamedInterface("events")
+package com.geovannycode.store.catalog.events;
 
 import org.springframework.modulith.NamedInterface;
