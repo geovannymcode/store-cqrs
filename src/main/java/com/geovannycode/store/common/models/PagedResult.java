@@ -1,4 +1,4 @@
-package com.geovannycode.store.common;
+package com.geovannycode.store.common.models;
 
 import java.util.List;
 
