@@ -33,4 +33,14 @@ public class ProductQueryService {
     public List<ProductView> findProductsOrderedByRating() {
         return repository.findAllOrderByRatingDesc();
     }
+
+    /**
+     * Guarda una vista de producto.
+     * @param view La vista de producto a guardar
+     * @return La vista guardada
+     */
+    @Transactional(readOnly = false)
+    public ProductView saveProductView(ProductView view) {
+        return repository.save(view);
+    }
 }
