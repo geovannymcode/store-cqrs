@@ -3,19 +3,13 @@
   "extends": [
     "config:recommended"
   ],
-  "labels": ["dependencies", "java"],
-  "vulnerabilityAlerts": {
-    "labels": ["security"],
-    "assignees": ["geovannymcode"]
-  },
+  "timezone": "America/Bogota",
   "packageRules": [
     {
-      "matchPackagePatterns": ["^org.springframework.boot"],
-      "groupName": "spring boot packages"
-    },
-    {
-      "matchPackagePatterns": ["^com.vaadin"],
-      "groupName": "vaadin packages"
+      "matchPackagePatterns": ["*"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch"
     }
   ]
 }
