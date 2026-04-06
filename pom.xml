@@ -73,7 +73,7 @@
         <dependency>
             <groupId>org.jmolecules</groupId>
             <artifactId>jmolecules-cqrs-architecture</artifactId>
-            <version>1.10.0</version>
+            <version>2.0.1</version>
         </dependency>
 
         <!-- (Opcional si no la tienes) DDD types como AggregateRoot -->
